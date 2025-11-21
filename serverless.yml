@@ -26,6 +26,12 @@ functions:
       - httpApi:
           path: /api/notes
           method: GET
+  patchNote:
+    handler: functions/patchNote/index.handler
+    events:
+      - httpApi:
+          path: /api/notes/{noteId}
+          method: PATCH
   signUp:
     handler: functions/auth/signUp/index.handler
     events:
