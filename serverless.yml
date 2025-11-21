@@ -40,6 +40,12 @@ functions:
       - httpApi:
           path: /api/notes/{noteId}
           method: DELETE
+  restoreNote:
+    handler: functions/restoreNote/index.handler
+    events:
+      - httpApi:
+          path: /api/notes/{noteId}/restore
+          method: PUT
   signUp:
     handler: functions/auth/signUp/index.handler
     events:
