@@ -8,7 +8,7 @@ const middy = require("@middy/core");
 const client = new DynamoDBClient({});
 const db = DynamoDBDocumentClient.from(client);
 
-async function getNotes() {
+async function getActiveNotes() {
     const queryActiveNotes = new QueryCommand({
         TableName: NOTES_TABLE,
         KeyConditionExpression: "PK = :pk AND begins_with(SK, :prefix)",
@@ -28,7 +28,7 @@ async function getNotes() {
 }
 
 const getAllNotes = async (event, context) => {
-    const result = await getNotes();
+    const result = await getActiveNotes();
 
     if(!result) return sendResponse(400, {message: "Could not get notes from query."});
 

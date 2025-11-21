@@ -1,14 +1,10 @@
-# "org" ensures this Service is used with the correct Serverless Framework Access Key.
+
 org: map24
-# "service" is the name of this project. This will also be added to your AWS resource names.
 service: notes-kimbellander
 
 provider:
   name: aws
   runtime: nodejs20.x
-  # Uncomment to easily set up a custom domain. Read the docs for more details:
-  # https://www.serverless.com/framework/docs/providers/aws/guide/domains
-  # domain: api.example.com
   region: eu-north-1
   environment:
     TOKEN_KEY: ${env:TOKEN_KEY}
@@ -32,6 +28,12 @@ functions:
       - httpApi:
           path: /api/notes/{noteId}
           method: PATCH
+  deleteNote:
+    handler: functions/deleteNote/index.handler
+    events:
+      - httpApi:
+          path: /api/notes/{noteId}
+          method: DELETE
   signUp:
     handler: functions/auth/signUp/index.handler
     events:

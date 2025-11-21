@@ -1,27 +1,9 @@
 const { DynamoDBClient } = require("@aws-sdk/client-dynamodb");
-const { DynamoDBDocumentClient, GetCommand, UpdateCommand } = require("@aws-sdk/lib-dynamodb");
-const { NOTES_TABLE, ACTIVE_NOTES_PREFIX } = require("./constants");
+const { DynamoDBDocumentClient, UpdateCommand } = require("@aws-sdk/lib-dynamodb");
+const { NOTES_TABLE } = require("./constants");
 
 const client = new DynamoDBClient({});
 const db = DynamoDBDocumentClient.from(client);
-
-async function getNoteForPatch(noteId) {
-    const SK = `${ACTIVE_NOTES_PREFIX}${noteId}`
-    const getNote = new GetCommand({
-        TableName: NOTES_TABLE,
-        Key: {PK: "PK", SK: SK}
-    });
-
-    let fetchedNote;
-
-    try {
-        const result = await db.send(getNote);
-        fetchedNote = result.Item;
-        return fetchedNote;
-    } catch (err) {
-        throw new Error(err.message);
-    }
-}
 
 function buildUpdateExpression(updateAttributes) {
     const updateExpression = "set " + Object.keys(updateAttributes)
@@ -36,7 +18,7 @@ function buildUpdateExpression(updateAttributes) {
     return { updateExpression, expressionAttributeValues };
 };
 
-async function updateNote(fetchedNote, updateAttributes, updateExpression, expressionAttributeValues) {
+async function updateNote(fetchedNote, updateExpression, expressionAttributeValues) {
     const updatePatchedNote = new UpdateCommand({
         TableName: NOTES_TABLE,
         Key: {
@@ -56,4 +38,4 @@ async function updateNote(fetchedNote, updateAttributes, updateExpression, expre
     };
 }
 
-module.exports = { getNoteForPatch, buildUpdateExpression, updateNote };
+module.exports = { buildUpdateExpression, updateNote };

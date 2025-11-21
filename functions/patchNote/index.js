@@ -1,8 +1,8 @@
 const { validateToken } = require("../../middleware/auth");
 const middy = require("@middy/core");
-const { getNoteForPatch, buildUpdateExpression, updateNote } = require("../../utils/services/patchNoteService");
+const { buildUpdateExpression, updateNote } = require("../../utils/services/patchNoteService");
 const { sendResponse } = require("../../utils/responses");
-const { parseBody } = require("../../utils/services/helpers");
+const { parseBody, getActiveNote } = require("../../utils/services/helpers");
 
 const patchNote = async (event, context) => {
     const { noteId } = event.pathParameters;
@@ -21,7 +21,7 @@ const patchNote = async (event, context) => {
     let fetchedNote;
 
     try {
-        fetchedNote = await getNoteForPatch(noteId);
+        fetchedNote = await getActiveNote(noteId);
     } catch(err) {
         return sendResponse(400, {message: "Could not get note to edit from database.", error: err.message});
     };
