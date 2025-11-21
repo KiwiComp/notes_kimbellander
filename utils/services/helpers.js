@@ -1,4 +1,9 @@
+const { ACTIVE_NOTES_PREFIX, NOTES_TABLE } = require("./constants");
+const { DynamoDBClient } = require("@aws-sdk/client-dynamodb");
+const { DynamoDBDocumentClient, GetCommand } = require("@aws-sdk/lib-dynamodb");
 
+const client = new DynamoDBClient({});
+const db = DynamoDBDocumentClient.from(client);
 
 function checkBodyFormat(body) {
     const allowedFields = ["title", "category", "textContent"]; 
@@ -29,4 +34,22 @@ function parseBody(body) {
     };
 }
 
-module.exports = { checkBodyFormat, parseBody };
+async function getActiveNote(noteId) {
+    const SK = `${ACTIVE_NOTES_PREFIX}${noteId}`
+    const getNote = new GetCommand({
+        TableName: NOTES_TABLE,
+        Key: {PK: "PK", SK: SK}
+    });
+
+    let fetchedNote;
+
+    try {
+        const result = await db.send(getNote);
+        fetchedNote = result.Item;
+        return fetchedNote;
+    } catch (err) {
+        throw new Error(err.message);
+    }
+}
+
+module.exports = { checkBodyFormat, parseBody, getActiveNote };

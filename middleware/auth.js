@@ -23,7 +23,6 @@ const validateToken = {
     },
 
     onError: async (request) => {
-        // Om lambdan går fel.
         return sendResponse(400, {message: "Middy couldn't run lambda."})
     }
 }
