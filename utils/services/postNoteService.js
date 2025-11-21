@@ -6,7 +6,7 @@ const crypto = require("crypto");
 const client = new DynamoDBClient({});
 const db = DynamoDBDocumentClient.from(client);
 
-async function createNewNote(title, category, text) {
+async function createNewNote(title, category, textContent) {
     const id = crypto.randomUUID();
     const timestamp = new Date().toISOString();
     const SK = `NOTE_ACTIVE_${id}`;
@@ -14,9 +14,10 @@ async function createNewNote(title, category, text) {
     const newNote = {
         PK: PK,
         SK: SK,
+        id: id,
         title: title,
         category: category,
-        text: text,
+        textContent: textContent,
         createdAt: timestamp,
         modifiedAt: "",
     };
@@ -35,25 +36,4 @@ async function createNewNote(title, category, text) {
     };
 }
 
-function checkBodyFormat(body) {
-    const allowedFields = ["title", "category", "text"]; 
-    const filteredBody = {};
-
-    for(const key of Object.keys(body)) {
-        if(allowedFields.includes(key)) {
-            filteredBody[key] = body[key];
-        } else {
-            throw new Error(`Field ${key} is not allowed.`);
-        }
-    }
-
-    if(filteredBody.title.length > 50) {
-        throw new Error("Title is too long, max 50 characters.");
-    } else if(filteredBody.text.length > 300) {
-        throw new Error("Text is too long, max 300 characters.");
-    };
-
-    return filteredBody;
-}
-
-module.exports = { createNewNote, checkBodyFormat };
+module.exports = { createNewNote };
