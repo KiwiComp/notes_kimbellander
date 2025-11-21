@@ -1,0 +1,55 @@
+# "org" ensures this Service is used with the correct Serverless Framework Access Key.
+org: map24
+# "service" is the name of this project. This will also be added to your AWS resource names.
+service: notes-kimbellander
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  # Uncomment to easily set up a custom domain. Read the docs for more details:
+  # https://www.serverless.com/framework/docs/providers/aws/guide/domains
+  # domain: api.example.com
+  region: eu-north-1
+
+functions:
+  postNote:
+    handler: functions/postNote/index.handler
+    events:
+      - httpApi:
+          path: /api/notes
+          method: POST
+
+resources:
+  Resources:
+    notesDb:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: NOTES
+        AttributeDefinitions:
+          # Partition Key
+          - AttributeName: PK
+            AttributeType: S 
+          # Sort Key
+          - AttributeName: SK
+            AttributeType: S 
+        KeySchema:
+          # Partition Key
+          - AttributeName: PK
+            KeyType: HASH 
+          # Sort Key
+          - AttributeName: SK
+            KeyType: RANGE 
+        BillingMode: PAY_PER_REQUEST
+    usersDb:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: USER_ACCOUNTS
+        AttributeDefinitions:
+          # Partition Key
+          - AttributeName: username
+            AttributeType: S 
+        KeySchema:
+          # Partition Key
+          - AttributeName: username
+            KeyType: HASH 
+        BillingMode: PAY_PER_REQUEST
