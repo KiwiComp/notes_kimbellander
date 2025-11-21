@@ -27,13 +27,13 @@ functions:
           path: /api/notes
           method: GET
   signUp:
-    handler: functions/signUp/index.handler
+    handler: functions/auth/signUp/index.handler
     events:
       - httpApi:
           path: /api/user/signup
           method: POST
   signIn:
-    handler: functions/signIn/index.handler
+    handler: functions/auth/signIn/index.handler
     events:
       - httpApi:
           path: /api/user/signin
