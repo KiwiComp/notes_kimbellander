@@ -18,6 +18,12 @@ functions:
       - httpApi:
           path: /api/notes
           method: POST
+  getAllNotes:
+    handler: functions/getAllNotes/index.handler
+    events:
+      - httpApi:
+          path: /api/notes
+          method: GET
 
 resources:
   Resources:
