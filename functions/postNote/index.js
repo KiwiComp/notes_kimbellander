@@ -3,19 +3,13 @@ const { DynamoDBClient } = require("@aws-sdk/client-dynamodb");
 const { DynamoDBDocumentClient, PutCommand } = require("@aws-sdk/lib-dynamodb");
 const { NOTES_TABLE, PK } = require("../../utils/services/constants");
 const crypto = require("crypto");
+const middy = require("@middy/core");
+const { validateToken } = require("../../middleware/auth");
 
 const client = new DynamoDBClient({});
 const db = DynamoDBDocumentClient.from(client);
 
-exports.handler = async (event, context) => {
-    let title, category, text;
-    try {
-        ({ title, category, text } = JSON.parse(event.body));
-    } catch (err) {
-        console.error(err);
-        return sendResponse(400, {message: "Could not parse body: ", error: err.message});
-    };
-
+async function createNewNote(title, category, text) {
     const id = crypto.randomUUID();
     const timestamp = new Date().toISOString();
     const SK = `NOTE_ACTIVE_${id}`;
@@ -36,9 +30,27 @@ exports.handler = async (event, context) => {
 
     try {
         await db.send(putNote);
-        return sendResponse(200, newNote);
+        return newNote;
     } catch (err) {
         console.error(err);
-        return sendResponse(400, {success: false, message: "Could not store new note to database."});
+        return false;
     };
 }
+
+const postNote = async (event, context) => {
+    let title, category, text;
+    try {
+        ({ title, category, text } = JSON.parse(event.body));
+    } catch (err) {
+        console.error(err);
+        return sendResponse(400, {message: "Could not parse body: ", error: err.message});
+    };
+
+    const result = await createNewNote(title, category, text);
+
+    if(!result) return sendResponse(400, {success: false, message: "Could not store new note to database."});
+
+    return sendResponse(200, result);
+}
+
+exports.handler = middy(postNote).use(validateToken);

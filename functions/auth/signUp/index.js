@@ -1,9 +1,9 @@
-const { sendResponse } = require("../../utils/responses");
+const { sendResponse } = require("../../../utils/responses");
 const bcrypt = require('bcryptjs');
 const crypto = require("crypto");
 const { DynamoDBClient } = require("@aws-sdk/client-dynamodb");
 const { DynamoDBDocumentClient, PutCommand } = require("@aws-sdk/lib-dynamodb");
-const { ACCOUNTS_TABLE } = require("../../utils/services/constants");
+const { ACCOUNTS_TABLE } = require("../../../utils/services/constants");
 
 const client = new DynamoDBClient({});
 const db = DynamoDBDocumentClient.from(client);

@@ -1,7 +1,7 @@
-const { sendResponse } = require("../../utils/responses");
+const { sendResponse } = require("../../../utils/responses");
 const { DynamoDBClient } = require("@aws-sdk/client-dynamodb");
 const { DynamoDBDocumentClient, GetCommand } = require("@aws-sdk/lib-dynamodb");
-const { ACCOUNTS_TABLE } = require("../../utils/services/constants");
+const { ACCOUNTS_TABLE } = require("../../../utils/services/constants");
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
