@@ -1,8 +1,9 @@
 const { validateToken } = require("../../middleware/auth");
 const middy = require("@middy/core");
-const { getActiveNote } = require("../../utils/services/helpers");
+const { getSingleNote, deleteSingleNote } = require("../../utils/services/helpers");
 const { sendResponse } = require("../../utils/responses");
-const { deleteNoteCommand, storeDeletedNote } = require("../../utils/services/deleteNoteService");
+const { storeDeletedNote } = require("../../utils/services/deleteNoteService");
+const { ACTIVE_NOTES_PREFIX } = require("../../utils/services/constants");
 
 
 const deleteNote = async (event, context) => {
@@ -10,14 +11,14 @@ const deleteNote = async (event, context) => {
 
     let noteToDelete;
     try {
-        noteToDelete = await getActiveNote(noteId);
+        noteToDelete = await getSingleNote(noteId, ACTIVE_NOTES_PREFIX);
     } catch(err) {
         console.error(err);
         return sendResponse(404, {message: "Could not find the requested note to delete: ", error: err.message});
     }
 
     try {
-        await deleteNoteCommand(noteToDelete);
+        await deleteSingleNote(noteToDelete);
     } catch(err) {
         console.error(err);
         return sendResponse(400, {message: "Could not delete the requested note: ", error: err.message});

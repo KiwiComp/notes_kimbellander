@@ -1,6 +1,6 @@
-const { ACTIVE_NOTES_PREFIX, NOTES_TABLE } = require("./constants");
+const { NOTES_TABLE } = require("./constants");
 const { DynamoDBClient } = require("@aws-sdk/client-dynamodb");
-const { DynamoDBDocumentClient, GetCommand, QueryCommand } = require("@aws-sdk/lib-dynamodb");
+const { DynamoDBDocumentClient, GetCommand, QueryCommand, DeleteCommand } = require("@aws-sdk/lib-dynamodb");
 
 const client = new DynamoDBClient({});
 const db = DynamoDBDocumentClient.from(client);
@@ -34,8 +34,8 @@ function parseBody(body) {
     };
 }
 
-async function getActiveNote(noteId) {
-    const SK = `${ACTIVE_NOTES_PREFIX}${noteId}`
+async function getSingleNote(noteId, prefixSK) {
+    const SK = `${prefixSK}${noteId}`
     const getNote = new GetCommand({
         TableName: NOTES_TABLE,
         Key: {PK: "PK", SK: SK}
@@ -71,4 +71,15 @@ async function getAllNotes(prefixSK) {
     }
 }
 
-module.exports = { checkBodyFormat, parseBody, getActiveNote, getAllNotes };
+async function deleteSingleNote(noteToDelete) {
+    try {
+        await db.send(new DeleteCommand({
+            TableName: NOTES_TABLE,
+            Key: {PK: "PK", SK: noteToDelete.SK}
+        }));
+    } catch(err) {
+        throw new Error(err.message);
+    };
+}
+
+module.exports = { checkBodyFormat, parseBody, getSingleNote, getAllNotes, deleteSingleNote };

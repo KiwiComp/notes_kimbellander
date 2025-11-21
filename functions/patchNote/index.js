@@ -2,7 +2,8 @@ const { validateToken } = require("../../middleware/auth");
 const middy = require("@middy/core");
 const { buildUpdateExpression, updateNote } = require("../../utils/services/patchNoteService");
 const { sendResponse } = require("../../utils/responses");
-const { parseBody, getActiveNote } = require("../../utils/services/helpers");
+const { parseBody, getSingleNote } = require("../../utils/services/helpers");
+const { ACTIVE_NOTES_PREFIX } = require("../../utils/services/constants");
 
 const patchNote = async (event, context) => {
     const { noteId } = event.pathParameters;
@@ -21,7 +22,7 @@ const patchNote = async (event, context) => {
     let fetchedNote;
 
     try {
-        fetchedNote = await getActiveNote(noteId);
+        fetchedNote = await getSingleNote(noteId, ACTIVE_NOTES_PREFIX);
     } catch(err) {
         return sendResponse(400, {message: "Could not get note to edit from database.", error: err.message});
     };
@@ -29,7 +30,7 @@ const patchNote = async (event, context) => {
     const { updateExpression, expressionAttributeValues } = buildUpdateExpression(updateAttributes);
 
     try {
-        const updatedNote = await updateNote(fetchedNote, updateAttributes, updateExpression, expressionAttributeValues);
+        const updatedNote = await updateNote(fetchedNote, updateExpression, expressionAttributeValues);
         return sendResponse(200, {message: "Note updated successfully", updatedNote});
     } catch(err) {
         console.error(err);
