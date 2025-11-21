@@ -24,6 +24,12 @@ functions:
       - httpApi:
           path: /api/notes
           method: GET
+  signUp:
+    handler: functions/signUp/index.handler
+    events:
+      - httpApi:
+          path: /api/user/signup
+          method: POST
 
 resources:
   Resources:
