@@ -10,6 +10,8 @@ provider:
   # https://www.serverless.com/framework/docs/providers/aws/guide/domains
   # domain: api.example.com
   region: eu-north-1
+  environment:
+    TOKEN_KEY: ${env:TOKEN_KEY}
 
 functions:
   postNote:
@@ -29,6 +31,12 @@ functions:
     events:
       - httpApi:
           path: /api/user/signup
+          method: POST
+  signIn:
+    handler: functions/signIn/index.handler
+    events:
+      - httpApi:
+          path: /api/user/signin
           method: POST
 
 resources:
