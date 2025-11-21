@@ -16,11 +16,17 @@ functions:
       - httpApi:
           path: /api/notes
           method: POST
-  getAllNotes:
-    handler: functions/getAllNotes/index.handler
+  getAllActiveNotes:
+    handler: functions/getAllActiveNotes/index.handler
     events:
       - httpApi:
           path: /api/notes
+          method: GET
+  getAllDeletedNotes:
+    handler: functions/getAllDeletedNotes/index.handler
+    events:
+      - httpApi:
+          path: /api/deleted-notes
           method: GET
   patchNote:
     handler: functions/patchNote/index.handler

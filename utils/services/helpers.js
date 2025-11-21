@@ -1,6 +1,6 @@
 const { ACTIVE_NOTES_PREFIX, NOTES_TABLE } = require("./constants");
 const { DynamoDBClient } = require("@aws-sdk/client-dynamodb");
-const { DynamoDBDocumentClient, GetCommand } = require("@aws-sdk/lib-dynamodb");
+const { DynamoDBDocumentClient, GetCommand, QueryCommand } = require("@aws-sdk/lib-dynamodb");
 
 const client = new DynamoDBClient({});
 const db = DynamoDBDocumentClient.from(client);
@@ -52,4 +52,23 @@ async function getActiveNote(noteId) {
     }
 }
 
-module.exports = { checkBodyFormat, parseBody, getActiveNote };
+async function getAllNotes(prefixSK) {
+    const queryAllNotes = new QueryCommand({
+        TableName: NOTES_TABLE,
+        KeyConditionExpression: "PK = :pk AND begins_with(SK, :prefix)",
+        ExpressionAttributeValues: {
+            ":pk": "PK",
+            ":prefix": prefixSK
+        }
+    })
+
+    try {
+        const { Items } = await db.send(queryAllNotes);
+        return Items;
+    } catch (err) {
+        console.error(err);
+        return false;
+    }
+}
+
+module.exports = { checkBodyFormat, parseBody, getActiveNote, getAllNotes };
