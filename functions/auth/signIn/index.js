@@ -49,7 +49,7 @@ async function signUp(username, password) {
     return {success: true, token: token};
 }
 
-exports.handler = async (event, context) => {
+exports.handler = async (event) => {
     let username, password;
 
     try {

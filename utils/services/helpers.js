@@ -82,4 +82,22 @@ async function deleteSingleNote(noteToDelete) {
     };
 }
 
-module.exports = { checkBodyFormat, parseBody, getSingleNote, getAllNotes, deleteSingleNote };
+async function deleteMultipleNotes(deletedNotes) {
+    let errors = [];
+    for(const note of deletedNotes) {
+        try {
+            await db.send(new DeleteCommand({
+                TableName: NOTES_TABLE,
+                Key: {PK: "PK", SK: note.SK}
+            }));
+        } catch(err) {
+            errors.push({SK: note.SK, message: err.message});
+        };
+    };
+
+    if (errors.length > 0) {
+        throw {errors};
+    };
+}
+
+module.exports = { checkBodyFormat, parseBody, getSingleNote, getAllNotes, deleteSingleNote, deleteMultipleNotes };

@@ -4,7 +4,7 @@ const { validateToken } = require("../../middleware/auth");
 const { createNewNote } = require("../../utils/services/postNoteService");
 const { checkBodyFormat, parseBody } = require("../../utils/services/helpers");
 
-const postNote = async (event, context) => {
+const postNote = async (event) => {
     let body;
 
     try {

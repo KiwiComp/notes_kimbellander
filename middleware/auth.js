@@ -22,6 +22,7 @@ const validateToken = {
         }
     },
 
+    // Hur ska jag göra med request här?
     onError: async (request) => {
         return sendResponse(400, {message: "Middy couldn't run lambda."})
     }

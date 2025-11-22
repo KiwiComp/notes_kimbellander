@@ -41,7 +41,7 @@ async function signUp(username, password, firstName, lastName) {
     return result;
 }
 
-exports.handler = async (event, context) => {
+exports.handler = async (event) => {
     let username, password, firstName, lastName;
 
     try {
