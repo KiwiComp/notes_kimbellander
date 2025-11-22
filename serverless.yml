@@ -44,7 +44,13 @@ functions:
     handler: functions/restoreNote/index.handler
     events:
       - httpApi:
-          path: /api/notes/{noteId}/restore
+          path: /api/notes/restore/{noteId}
+          method: PUT
+  restoreAllNotes:
+    handler: functions/restoreAllNotes/index.handler
+    events:
+      - httpApi:
+          path: /api/notes/restore
           method: PUT
   signUp:
     handler: functions/auth/signUp/index.handler
