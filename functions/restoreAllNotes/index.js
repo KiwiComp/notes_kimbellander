@@ -1,12 +1,12 @@
 const middy = require("@middy/core");
 const { validateToken } = require("../../middleware/auth");
-const { getAllNotes } = require("../../utils/services/helpers");
+const { getAllNotes, deleteMultipleNotes } = require("../../utils/services/helpers");
 const { DELETED_NOTES_PREFIX } = require("../../utils/services/constants");
 const { sendResponse } = require("../../utils/responses");
-const { deleteAllDeletedNotes, restoreAllDeletedNotes } = require("../../utils/services/restoreNoteService");
+const { restoreAllDeletedNotes } = require("../../utils/services/restoreNoteService");
 
 
-const restoreAllNotes = async (event) => {
+const restoreAllNotes = async () => {
     let allNotes;
 
     try {
@@ -17,7 +17,7 @@ const restoreAllNotes = async (event) => {
     };
 
     try {
-        await deleteAllDeletedNotes(allNotes);
+        await deleteMultipleNotes(allNotes);
     } catch(err) {
         console.error(err);
         return sendResponse(400, {message: "Some notes failed to delete: ", error: err.errors});

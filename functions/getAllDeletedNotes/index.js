@@ -5,7 +5,7 @@ const { DELETED_NOTES_PREFIX } = require("../../utils/services/constants");
 const { sendResponse } = require("../../utils/responses");
 
 
-const getAllDeletedNotes = async (event) => {
+const getAllDeletedNotes = async () => {
     const result = await getAllNotes(DELETED_NOTES_PREFIX);
 
     if(!result) return sendResponse(404, {message: "Could not get deleted notes for query."});

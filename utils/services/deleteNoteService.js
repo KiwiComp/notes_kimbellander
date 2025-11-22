@@ -22,4 +22,33 @@ async function storeDeletedNote(noteToDelete) {
     };
 }
 
-module.exports = { storeDeletedNote };
+async function storeAllDeletedNotes(notesToStore) {
+    let errors = [];
+    let deletedNotes = [];
+    for(const note of notesToStore) {
+
+        const SK = `${DELETED_NOTES_PREFIX}${note.id}`;
+        const item = {
+            ...note,
+            SK: SK
+        };
+
+        try {
+            await db.send(new PutCommand({
+                TableName: NOTES_TABLE,
+                Item: item
+            }));
+            deletedNotes.push(item);
+        } catch(err) {
+            errors.push({SK: note.SK, message: err.message});
+        };
+    };
+
+    if (errors.length > 0) {
+        throw {errors};
+    };
+
+    return deletedNotes;
+}
+
+module.exports = { storeDeletedNote, storeAllDeletedNotes };

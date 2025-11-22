@@ -5,8 +5,9 @@ const { sendResponse } = require("../../utils/responses");
 const { parseBody, getSingleNote } = require("../../utils/services/helpers");
 const { ACTIVE_NOTES_PREFIX } = require("../../utils/services/constants");
 
-const patchNote = async (event, context) => {
+const patchNote = async (event) => {
     const { noteId } = event.pathParameters;
+    if(!noteId) return sendResponse(500, {message: "Invalid noteId in call."});
 
     let updateAttributes;
 

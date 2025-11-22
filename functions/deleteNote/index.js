@@ -6,8 +6,9 @@ const { storeDeletedNote } = require("../../utils/services/deleteNoteService");
 const { ACTIVE_NOTES_PREFIX } = require("../../utils/services/constants");
 
 
-const deleteNote = async (event, context) => {
+const deleteNote = async (event) => {
     const { noteId } = event.pathParameters;
+    if(!noteId) return sendResponse(500, {message: "Invalid noteId in call."});
 
     let noteToDelete;
     try {

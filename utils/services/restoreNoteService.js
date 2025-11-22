@@ -1,5 +1,5 @@
 const { DynamoDBClient } = require("@aws-sdk/client-dynamodb");
-const { DynamoDBDocumentClient, PutCommand, DeleteCommand } = require("@aws-sdk/lib-dynamodb");
+const { DynamoDBDocumentClient, PutCommand } = require("@aws-sdk/lib-dynamodb");
 const { ACTIVE_NOTES_PREFIX, NOTES_TABLE } = require("./constants");
 
 const client = new DynamoDBClient({});
@@ -19,24 +19,6 @@ async function restoreSingleNote(noteToRestore) {
         return restoredNote;
     } catch(err) {
         throw new Error(err.message);
-    };
-}
-
-async function deleteAllDeletedNotes(deletedNotes) {
-    let errors = [];
-    for(const note of deletedNotes) {
-        try {
-            await db.send(new DeleteCommand({
-                TableName: NOTES_TABLE,
-                Key: {PK: "PK", SK: note.SK}
-            }));
-        } catch(err) {
-            errors.push({SK: note.SK, message: err.message});
-        };
-    };
-
-    if (errors.length > 0) {
-        throw {errors};
     };
 }
 
@@ -69,4 +51,4 @@ async function restoreAllDeletedNotes(notesToRestore) {
     return restoredNotes;
 }
 
-module.exports = { restoreSingleNote, deleteAllDeletedNotes, restoreAllDeletedNotes };
+module.exports = { restoreSingleNote, restoreAllDeletedNotes };
