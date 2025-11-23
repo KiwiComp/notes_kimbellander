@@ -5,6 +5,9 @@ const { createNewNote } = require("../../utils/services/postNoteService");
 const { checkBodyFormat } = require("../../utils/services/helpers");
 
 const postNote = async (event) => {
+    const userId = event?.auth?.userId; 
+    if(!userId) return sendResponse(401, {message: "No authenticated user found."});
+
     let body;
 
     try {
@@ -25,7 +28,7 @@ const postNote = async (event) => {
         return sendResponse(400, {message: err.message});
     };
 
-    const result = await createNewNote(title, category, textContent);
+    const result = await createNewNote(title, category, textContent, userId);
 
     if(!result) return sendResponse(400, {success: false, message: "Could not store new note to database."});
 

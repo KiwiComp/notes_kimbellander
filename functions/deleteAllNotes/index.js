@@ -6,18 +6,21 @@ const { getAllNotes, deleteMultipleNotes } = require("../../utils/services/helpe
 const { storeNotesWithNewPrefixSK } = require("../../utils/services/deleteAndRestoreNoteService");
 
 
-const deleteAllNotes = async () => {
+const deleteAllNotes = async (event) => {
+    const userId = event?.auth?.userId; 
+    if(!userId) return sendResponse(401, {message: "No authenticated user found."});
+
     let allNotes;
 
     try {
-        allNotes = await getAllNotes(ACTIVE_NOTES_PREFIX);
+        allNotes = await getAllNotes(ACTIVE_NOTES_PREFIX, userId);
     } catch(err) {
         console.error(err);
         return sendResponse(500, {message: "Could not fetch notes to delete: ", error: err.message});
     };
 
     try {
-        await deleteMultipleNotes(allNotes);
+        await deleteMultipleNotes(allNotes, userId);
     } catch(err) {
         console.error(err);
         return sendResponse(500, {message: "Some notes failed to delete: ", errors: err.details});
@@ -25,7 +28,7 @@ const deleteAllNotes = async () => {
 
     try {
         const deletedNotes = await storeNotesWithNewPrefixSK(allNotes, DELETED_NOTES_PREFIX);
-        return sendResponse(200, {message: "Notes successfully deleted: ", deletedNotes}); 
+        return sendResponse(200, {message: `Notes successfully deleted for user ${userId}: `, deletedNotes}); 
     } catch(err) {
         console.error(err);
         return sendResponse(500, {message: "Some notes failed to be deleted: ", error: err.errors});

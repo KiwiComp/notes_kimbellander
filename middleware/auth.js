@@ -12,12 +12,12 @@ const validateToken = {
             const secret = process.env.TOKEN_KEY;
             const data = jwt.verify(token, secret);
 
-            request.event.id = data.id;
-            request.event.username = data.username;
+            request.event.auth = { userId: data.userId, username: data.username};
 
-            return request.response;
+            // return request.response;
         } catch(err) {
             console.error(err);
+            // throw new Error("Invalid or expired token.")
             return sendResponse(401, {message: "Invalid or expired token."})
         }
     },

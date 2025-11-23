@@ -6,6 +6,9 @@ const { getSingleNote } = require("../../utils/services/helpers");
 const { ACTIVE_NOTES_PREFIX } = require("../../utils/services/constants");
 
 const patchNote = async (event) => {
+    const userId = event?.auth?.userId; 
+    if(!userId) return sendResponse(401, {message: "No authenticated user found."});
+
     const { noteId } = event.pathParameters;
     if(!noteId) return sendResponse(500, {message: "Invalid noteId in call."});
 
@@ -23,7 +26,7 @@ const patchNote = async (event) => {
     let fetchedNote;
 
     try {
-        fetchedNote = await getSingleNote(noteId, ACTIVE_NOTES_PREFIX);
+        fetchedNote = await getSingleNote(noteId, ACTIVE_NOTES_PREFIX, userId);
     } catch(err) {
         return sendResponse(400, {message: "Could not get note to edit from database.", error: err.message});
     };
@@ -31,7 +34,7 @@ const patchNote = async (event) => {
     const { updateExpression, expressionAttributeValues } = buildUpdateExpression(updateAttributes);
 
     try {
-        const updatedNote = await updateNote(fetchedNote, updateExpression, expressionAttributeValues);
+        const updatedNote = await updateNote(fetchedNote, updateExpression, expressionAttributeValues, userId);
         return sendResponse(200, {message: "Note updated successfully", updatedNote});
     } catch(err) {
         console.error(err);

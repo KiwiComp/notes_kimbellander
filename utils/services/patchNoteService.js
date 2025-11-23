@@ -1,6 +1,6 @@
 const { DynamoDBClient } = require("@aws-sdk/client-dynamodb");
 const { DynamoDBDocumentClient, UpdateCommand } = require("@aws-sdk/lib-dynamodb");
-const { NOTES_TABLE } = require("./constants");
+const { NOTES_TABLE, USER_PK_PREFIX } = require("./constants");
 
 const client = new DynamoDBClient({});
 const db = DynamoDBDocumentClient.from(client);
@@ -18,11 +18,12 @@ function buildUpdateExpression(updateAttributes) {
     return { updateExpression, expressionAttributeValues };
 };
 
-async function updateNote(fetchedNote, updateExpression, expressionAttributeValues) {
+async function updateNote(fetchedNote, updateExpression, expressionAttributeValues, userId) {
+    const PK = `${USER_PK_PREFIX}${userId}`;
     const updatePatchedNote = new UpdateCommand({
         TableName: NOTES_TABLE,
         Key: {
-            PK: "PK", 
+            PK: PK, 
             SK: fetchedNote.SK
         },
         UpdateExpression: updateExpression,

@@ -17,36 +17,30 @@ async function getUser(username) {
 
     try {
         const fetchedUser = await db.send(getUserCommand);
-
-        if(fetchedUser?.Item) {
-            return fetchedUser.Item;
-        } else {
-            return false;
-        }
+        if(!fetchedUser?.Item) throw new Error("Incorrect username or password.");
+        return fetchedUser.Item;
     } catch(err) {
+        if(err.message === "Incorrect username or password.") throw err;
         console.error(err);
-        return false;
-    }
+        throw new Error("Database error.");
+    };
     
 }
 
-async function signUp(username, password) {
+async function signIn(username, password) {
     const fetchedUser = await getUser(username);
 
-    if(!fetchedUser) return {success: false, message: "Incorrect username or password."}
-
     const correctPassword = await bcrypt.compare(password, fetchedUser.password);
-
-    if(!correctPassword) return {success: false, message: "Incorrect username or password."};
+    if(!correctPassword) throw new Error("Incorrect username or password.");
 
     const secret = process.env.TOKEN_KEY;
     const token = jwt.sign(
-        {id: fetchedUser.id, username: fetchedUser.username},
+        {userId: fetchedUser.userId, username: fetchedUser.username},
         secret,
         {expiresIn: 3600}
     );
 
-    return {success: true, token: token};
+    return {token};
 }
 
 exports.handler = async (event) => {
@@ -56,11 +50,22 @@ exports.handler = async (event) => {
         ({username, password} = JSON.parse(event.body));
     } catch(err) {
         console.error(err);
-        return sendResponse(400, {message: "Could not parse body for sign up"});
+        return sendResponse(400, {message: "Could not parse body for sign up", error: err.message});
     };
 
-    const result = await signUp(username, password);
+    if(!username || !password) return sendResponse(400, {message: "Both username and password are required."});
 
-    if(result.success) return sendResponse(200, result);
-    if(!result.success) return sendResponse(400, result);
+    if (typeof username !== "string" || typeof password !== "string") {
+        return sendResponse(400, {message: "Username and password must be strings."});
+    }
+
+
+    try {
+        const result = await signIn(username, password);
+        return sendResponse(200, result);
+    } catch(err) {
+        console.error(err);
+        if(err.message === "Incorrect username or password.") return sendResponse(401, {message: err.message});
+        return sendResponse(500, {message: err.message || "Internal server error."});
+    };
 }

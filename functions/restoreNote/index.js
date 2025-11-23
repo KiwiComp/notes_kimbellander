@@ -7,19 +7,22 @@ const { storeNoteWithNewPrefixSK } = require("../../utils/services/deleteAndRest
 
 
 const restoreNote = async (event) => {
+    const userId = event?.auth?.userId; 
+    if(!userId) return sendResponse(401, {message: "No authenticated user found."});
+
     const {noteId} = event.pathParameters;
     if(!noteId) return sendResponse(500, {message: "Invalid noteId in call."});
 
     let noteToRestore;
     try {
-        noteToRestore = await getSingleNote(noteId, DELETED_NOTES_PREFIX);
+        noteToRestore = await getSingleNote(noteId, DELETED_NOTES_PREFIX, userId);
     } catch(err) {
         console.error(err);
         return sendResponse(404, {message: "Could not retrieve note for restoration: ", error: err.message});
     };
 
     try {
-        await deleteSingleNote(noteToRestore);
+        await deleteSingleNote(noteToRestore, userId);
     } catch(err) {
         console.error(err);
         return sendResponse(400, {message: "Could not delete note: ", error: err.message});
