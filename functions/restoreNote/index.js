@@ -2,8 +2,9 @@ const middy = require("@middy/core");
 const { validateToken } = require("../../middleware/auth");
 const { sendResponse } = require("../../utils/responses");
 const { getSingleNote, deleteSingleNote } = require("../../utils/services/helpers");
-const { DELETED_NOTES_PREFIX } = require("../../utils/services/constants");
-const { restoreSingleNote } = require("../../utils/services/restoreNoteService");
+const { DELETED_NOTES_PREFIX, ACTIVE_NOTES_PREFIX } = require("../../utils/services/constants");
+const { storeNoteWithNewPrefixSK } = require("../../utils/services/deleteAndRestoreNoteService");
+
 
 const restoreNote = async (event) => {
     const {noteId} = event.pathParameters;
@@ -25,7 +26,7 @@ const restoreNote = async (event) => {
     };
 
     try {
-        const restoredNote = await restoreSingleNote(noteToRestore);
+        const restoredNote = await storeNoteWithNewPrefixSK(noteToRestore, ACTIVE_NOTES_PREFIX);
         return sendResponse(200, {message: "Deleted note successfully restored: ", restoredNote});
     } catch(err) {
         console.error(err);

@@ -2,13 +2,13 @@ const { sendResponse } = require("../../utils/responses");
 const middy = require("@middy/core");
 const { validateToken } = require("../../middleware/auth");
 const { createNewNote } = require("../../utils/services/postNoteService");
-const { checkBodyFormat, parseBody } = require("../../utils/services/helpers");
+const { checkBodyFormat } = require("../../utils/services/helpers");
 
 const postNote = async (event) => {
     let body;
 
     try {
-        body = parseBody(event.body);
+        body = JSON.parse(event.body);
     } catch(err) {
         console.error(err);
         return sendResponse(400, {message: "Could not parse body: ", error: err.message});

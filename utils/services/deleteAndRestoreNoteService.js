@@ -1,33 +1,33 @@
 const { DynamoDBClient } = require("@aws-sdk/client-dynamodb");
 const { DynamoDBDocumentClient, PutCommand } = require("@aws-sdk/lib-dynamodb");
-const { NOTES_TABLE, DELETED_NOTES_PREFIX } = require("./constants");
+const { NOTES_TABLE } = require("./constants");
 
 const client = new DynamoDBClient({});
 const db = DynamoDBDocumentClient.from(client);
 
-async function storeDeletedNote(noteToDelete) {
-    const SK = `${DELETED_NOTES_PREFIX}${noteToDelete.id}`;
-    const deletedNote = {
-        ...noteToDelete,
+async function storeNoteWithNewPrefixSK(noteToStore, prefixSK) {
+    const SK = `${prefixSK}${noteToStore.id}`;
+    const savedNote = {
+        ...noteToStore,
         SK: SK
     }
     try {
         await db.send(new PutCommand({
             TableName: NOTES_TABLE,
-            Item: deletedNote
+            Item: savedNote
         }));
-        return deletedNote;
+        return savedNote;
     } catch(err) {
         throw new Error(err.message);
     };
 }
 
-async function storeAllDeletedNotes(notesToStore) {
+async function storeNotesWithNewPrefixSK(notesToStore, prefixSK) {
     let errors = [];
-    let deletedNotes = [];
+    let savedNotes = [];
     for(const note of notesToStore) {
 
-        const SK = `${DELETED_NOTES_PREFIX}${note.id}`;
+        const SK = `${prefixSK}${note.id}`;
         const item = {
             ...note,
             SK: SK
@@ -38,7 +38,7 @@ async function storeAllDeletedNotes(notesToStore) {
                 TableName: NOTES_TABLE,
                 Item: item
             }));
-            deletedNotes.push(item);
+            savedNotes.push(item);
         } catch(err) {
             errors.push({SK: note.SK, message: err.message});
         };
@@ -48,7 +48,7 @@ async function storeAllDeletedNotes(notesToStore) {
         throw {errors};
     };
 
-    return deletedNotes;
+    return savedNotes;
 }
 
-module.exports = { storeDeletedNote, storeAllDeletedNotes };
+module.exports = { storeNoteWithNewPrefixSK, storeNotesWithNewPrefixSK };
