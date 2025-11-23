@@ -2,7 +2,7 @@ const { validateToken } = require("../../middleware/auth");
 const middy = require("@middy/core");
 const { buildUpdateExpression, updateNote } = require("../../utils/services/patchNoteService");
 const { sendResponse } = require("../../utils/responses");
-const { parseBody, getSingleNote } = require("../../utils/services/helpers");
+const { getSingleNote } = require("../../utils/services/helpers");
 const { ACTIVE_NOTES_PREFIX } = require("../../utils/services/constants");
 
 const patchNote = async (event) => {
@@ -12,7 +12,7 @@ const patchNote = async (event) => {
     let updateAttributes;
 
     try {
-        updateAttributes = parseBody(event.body);
+        updateAttributes = JSON.parse(event.body);
     } catch(err) {
         console.error(err.message);
         return sendResponse(400, {message: "Could not parse body for patch note: ", error: err.message});

@@ -6,11 +6,13 @@ const { sendResponse } = require("../../utils/responses");
 
 
 const getAllDeletedNotes = async () => {
-    const result = await getAllNotes(DELETED_NOTES_PREFIX);
-
-    if(!result) return sendResponse(404, {message: "Could not get deleted notes for query."});
-
-    return sendResponse(200, result);
+    try {
+        const result = await getAllNotes(DELETED_NOTES_PREFIX);
+        return sendResponse(200, result);
+    } catch(err) {
+        console.error(err);
+        return sendResponse(500, {message: "Could not get deleted notes for query: ", error: err.message});
+    } 
 }
 
 exports.handler = middy(getAllDeletedNotes).use(validateToken);

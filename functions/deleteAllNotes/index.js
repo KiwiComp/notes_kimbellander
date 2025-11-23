@@ -1,9 +1,9 @@
 const middy = require("@middy/core");
 const { validateToken } = require("../../middleware/auth");
-const { ACTIVE_NOTES_PREFIX } = require("../../utils/services/constants");
+const { ACTIVE_NOTES_PREFIX, DELETED_NOTES_PREFIX } = require("../../utils/services/constants");
 const { sendResponse } = require("../../utils/responses");
 const { getAllNotes, deleteMultipleNotes } = require("../../utils/services/helpers");
-const { storeAllDeletedNotes } = require("../../utils/services/deleteNoteService");
+const { storeNotesWithNewPrefixSK } = require("../../utils/services/deleteAndRestoreNoteService");
 
 
 const deleteAllNotes = async () => {
@@ -13,22 +13,22 @@ const deleteAllNotes = async () => {
         allNotes = await getAllNotes(ACTIVE_NOTES_PREFIX);
     } catch(err) {
         console.error(err);
-        return sendResponse(404, {message: "Could not fetch notes to delete: ", error: err.message});
+        return sendResponse(500, {message: "Could not fetch notes to delete: ", error: err.message});
     };
 
     try {
         await deleteMultipleNotes(allNotes);
     } catch(err) {
         console.error(err);
-        return sendResponse(400, {message: "Some notes failed to delete: ", error: err.errors});
+        return sendResponse(500, {message: "Some notes failed to delete: ", errors: err.details});
     }
 
     try {
-        const deletedNotes = await storeAllDeletedNotes(allNotes);
+        const deletedNotes = await storeNotesWithNewPrefixSK(allNotes, DELETED_NOTES_PREFIX);
         return sendResponse(200, {message: "Notes successfully deleted: ", deletedNotes}); 
     } catch(err) {
         console.error(err);
-        return sendResponse(400, {message: "Some notes failed to be deleted: ", error: err.errors});
+        return sendResponse(500, {message: "Some notes failed to be deleted: ", error: err.errors});
     };
 }
 

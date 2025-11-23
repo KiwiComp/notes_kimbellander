@@ -17,21 +17,13 @@ function checkBodyFormat(body) {
         }
     }
 
-    if(filteredBody.title.length > 50) {
+    if(filteredBody.title && filteredBody.title.length > 50) {
         throw new Error("Title is too long, max 50 characters.");
-    } else if(filteredBody.textContent.length > 300) {
+    } else if(filteredBody.textContent && filteredBody.textContent.length > 300) {
         throw new Error("Text is too long, max 300 characters.");
     };
 
     return filteredBody;
-}
-
-function parseBody(body) {
-    try {
-        return JSON.parse(body);
-    } catch (err) {
-        throw new Error(err.message);
-    };
 }
 
 async function getSingleNote(noteId, prefixSK) {
@@ -41,12 +33,14 @@ async function getSingleNote(noteId, prefixSK) {
         Key: {PK: "PK", SK: SK}
     });
 
-    let fetchedNote;
-
     try {
         const result = await db.send(getNote);
-        fetchedNote = result.Item;
-        return fetchedNote;
+
+        if (!result.Item) {
+            throw new Error("Note not found");
+        }
+
+        return result.Item;
     } catch (err) {
         throw new Error(err.message);
     }
@@ -63,13 +57,15 @@ async function getAllNotes(prefixSK) {
     })
 
     try {
-        const { Items } = await db.send(queryAllNotes);
+        const { Items = [] } = await db.send(queryAllNotes);
         return Items;
+
     } catch (err) {
         console.error(err);
-        return false;
+        throw new Error(`Failed to fetch notes with prefix ${prefixSK}: ${err.message}`);
     }
 }
+
 
 async function deleteSingleNote(noteToDelete) {
     try {
@@ -96,8 +92,10 @@ async function deleteMultipleNotes(deletedNotes) {
     };
 
     if (errors.length > 0) {
-        throw {errors};
-    };
+        const err = new Error("Some notes failed to delete");
+        err.details = errors;
+        throw err;
+    }
 }
 
-module.exports = { checkBodyFormat, parseBody, getSingleNote, getAllNotes, deleteSingleNote, deleteMultipleNotes };
+module.exports = { checkBodyFormat, getSingleNote, getAllNotes, deleteSingleNote, deleteMultipleNotes };
