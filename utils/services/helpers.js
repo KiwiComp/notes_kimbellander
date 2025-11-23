@@ -1,4 +1,4 @@
-const { NOTES_TABLE } = require("./constants");
+const { NOTES_TABLE, USER_PK_PREFIX } = require("./constants");
 const { DynamoDBClient } = require("@aws-sdk/client-dynamodb");
 const { DynamoDBDocumentClient, GetCommand, QueryCommand, DeleteCommand } = require("@aws-sdk/lib-dynamodb");
 
@@ -26,11 +26,12 @@ function checkBodyFormat(body) {
     return filteredBody;
 }
 
-async function getSingleNote(noteId, prefixSK) {
+async function getSingleNote(noteId, prefixSK, userId) {
+    const PK = `${USER_PK_PREFIX}${userId}`
     const SK = `${prefixSK}${noteId}`
     const getNote = new GetCommand({
         TableName: NOTES_TABLE,
-        Key: {PK: "PK", SK: SK}
+        Key: {PK: PK, SK: SK}
     });
 
     try {
@@ -46,12 +47,13 @@ async function getSingleNote(noteId, prefixSK) {
     }
 }
 
-async function getAllNotes(prefixSK) {
+async function getAllNotes(prefixSK, userId) {
+    const PK = `${USER_PK_PREFIX}${userId}`;
     const queryAllNotes = new QueryCommand({
         TableName: NOTES_TABLE,
         KeyConditionExpression: "PK = :pk AND begins_with(SK, :prefix)",
         ExpressionAttributeValues: {
-            ":pk": "PK",
+            ":pk": PK,
             ":prefix": prefixSK
         }
     })
@@ -67,24 +69,26 @@ async function getAllNotes(prefixSK) {
 }
 
 
-async function deleteSingleNote(noteToDelete) {
+async function deleteSingleNote(noteToDelete, userId) {
+    const PK = `${USER_PK_PREFIX}${userId}`;
     try {
         await db.send(new DeleteCommand({
             TableName: NOTES_TABLE,
-            Key: {PK: "PK", SK: noteToDelete.SK}
+            Key: {PK: PK, SK: noteToDelete.SK}
         }));
     } catch(err) {
         throw new Error(err.message);
     };
 }
 
-async function deleteMultipleNotes(deletedNotes) {
+async function deleteMultipleNotes(deletedNotes, userId) {
+    const PK = `${USER_PK_PREFIX}${userId}`;
     let errors = [];
     for(const note of deletedNotes) {
         try {
             await db.send(new DeleteCommand({
                 TableName: NOTES_TABLE,
-                Key: {PK: "PK", SK: note.SK}
+                Key: {PK: PK, SK: note.SK}
             }));
         } catch(err) {
             errors.push({SK: note.SK, message: err.message});

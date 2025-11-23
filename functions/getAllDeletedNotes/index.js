@@ -5,9 +5,12 @@ const { DELETED_NOTES_PREFIX } = require("../../utils/services/constants");
 const { sendResponse } = require("../../utils/responses");
 
 
-const getAllDeletedNotes = async () => {
+const getAllDeletedNotes = async (event) => {
+    const userId = event?.auth?.userId; 
+    if(!userId) return sendResponse(401, {message: "No authenticated user found."});
+
     try {
-        const result = await getAllNotes(DELETED_NOTES_PREFIX);
+        const result = await getAllNotes(DELETED_NOTES_PREFIX, userId);
         return sendResponse(200, result);
     } catch(err) {
         console.error(err);
