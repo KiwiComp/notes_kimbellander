@@ -1,0 +1,296 @@
+type: collection.insomnia.rest/5.0
+schema_version: "5.1"
+name: NOTES_KimBellander
+meta:
+  id: wrk_ee53ebe7f12a48d6aaf3edec9d3977e3
+  created: 1763714664696
+  modified: 1764153584885
+  description: ""
+collection:
+  - url: https://qqli65t13i.execute-api.eu-north-1.amazonaws.com/api/notes
+    name: postNote
+    meta:
+      id: req_b4967e7459d8451aa2d0ef9c5dea6979
+      created: 1763714669620
+      modified: 1764153047777
+      isPrivate: false
+      description: ""
+      sortKey: -1763815522343
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        	"title": "hej",
+        	"category": "hej",
+        	"textContent": "hej"
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/12.0.0
+    authentication:
+      type: bearer
+      token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzY2JjOGNiMS1hZmZlLTQ0MjgtYTY1Ni04NWQzYTMyZjZlNGYiLCJ1c2VybmFtZSI6ImtpbSIsImlhdCI6MTc2NDE1MTYzOSwiZXhwIjoxNzY0MTU1MjM5fQ.rpczStQc_-NShzQ_68FgJsVilJB1bsjpF8XUFj-FMI8
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: https://qqli65t13i.execute-api.eu-north-1.amazonaws.com/api/notes
+    name: getAllActiveNotes
+    meta:
+      id: req_04c4365c761d4fb99394064fa886bb4e
+      created: 1763717208835
+      modified: 1764152919046
+      isPrivate: false
+      description: ""
+      sortKey: -1763815522296.125
+    method: GET
+    headers:
+      - name: User-Agent
+        value: insomnia/12.0.0
+    authentication:
+      type: bearer
+      token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzY2JjOGNiMS1hZmZlLTQ0MjgtYTY1Ni04NWQzYTMyZjZlNGYiLCJ1c2VybmFtZSI6ImtpbSIsImlhdCI6MTc2NDE1MTYzOSwiZXhwIjoxNzY0MTU1MjM5fQ.rpczStQc_-NShzQ_68FgJsVilJB1bsjpF8XUFj-FMI8
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: https://qqli65t13i.execute-api.eu-north-1.amazonaws.com/api/user/signup
+    name: signUp
+    meta:
+      id: req_568dd8ea9015469982c7e0627f51269b
+      created: 1763718235599
+      modified: 1764152976831
+      isPrivate: false
+      description: ""
+      sortKey: -1763815522493
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        	"username": "ga",
+        	"password": "ga",
+        	"firstName": "ga",
+        	"lastName": "bell"
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/12.0.0
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: https://qqli65t13i.execute-api.eu-north-1.amazonaws.com/api/user/signin
+    name: signIn
+    meta:
+      id: req_da95fa5dc00f46ac96f2e001966ec69d
+      created: 1763720222134
+      modified: 1764151637348
+      isPrivate: false
+      description: ""
+      sortKey: -1763815522393
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        	"username": "kim",
+        	"password": "kim"
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/12.0.0
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: https://qqli65t13i.execute-api.eu-north-1.amazonaws.com/api/notes/e9ab821d-2140-4f21-98b7-3eef85a9490b
+    name: patchNote
+    meta:
+      id: req_ef6881a8878f4d438025ee1cd4fef0c8
+      created: 1763739518046
+      modified: 1764153097018
+      isPrivate: false
+      description: ""
+      sortKey: -1763815522318
+    method: PATCH
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        	"title": "FÄRDIGT?!",
+        	"category": "funkfunk",
+        	"textContent": "hfsjak hajksfh ajksfg as"
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/12.0.0
+    authentication:
+      type: bearer
+      token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzY2JjOGNiMS1hZmZlLTQ0MjgtYTY1Ni04NWQzYTMyZjZlNGYiLCJ1c2VybmFtZSI6ImtpbSIsImlhdCI6MTc2NDE1MTYzOSwiZXhwIjoxNzY0MTU1MjM5fQ.rpczStQc_-NShzQ_68FgJsVilJB1bsjpF8XUFj-FMI8
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: https://qqli65t13i.execute-api.eu-north-1.amazonaws.com/api/notes/04bec7a4-cf65-454d-9ef0-ca14498f0e78
+    name: deleteNote
+    meta:
+      id: req_8f39eb8f3d2641c59b8de91ca1beeb79
+      created: 1763746545428
+      modified: 1764153229730
+      isPrivate: false
+      description: ""
+      sortKey: -1763815522305.5
+    method: DELETE
+    headers:
+      - name: User-Agent
+        value: insomnia/12.0.0
+    authentication:
+      type: bearer
+      token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzY2JjOGNiMS1hZmZlLTQ0MjgtYTY1Ni04NWQzYTMyZjZlNGYiLCJ1c2VybmFtZSI6ImtpbSIsImlhdCI6MTc2NDE1MTYzOSwiZXhwIjoxNzY0MTU1MjM5fQ.rpczStQc_-NShzQ_68FgJsVilJB1bsjpF8XUFj-FMI8
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: https://qqli65t13i.execute-api.eu-north-1.amazonaws.com/api/deleted-notes
+    name: getAllDeletedNotes
+    meta:
+      id: req_23daa6b326ac407abf1f55483cfddb5c
+      created: 1763753674557
+      modified: 1764152925448
+      isPrivate: false
+      description: ""
+      sortKey: -1763815522294.5625
+    method: GET
+    headers:
+      - name: User-Agent
+        value: insomnia/12.0.0
+    authentication:
+      type: bearer
+      token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzY2JjOGNiMS1hZmZlLTQ0MjgtYTY1Ni04NWQzYTMyZjZlNGYiLCJ1c2VybmFtZSI6ImtpbSIsImlhdCI6MTc2NDE1MTYzOSwiZXhwIjoxNzY0MTU1MjM5fQ.rpczStQc_-NShzQ_68FgJsVilJB1bsjpF8XUFj-FMI8
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: https://qqli65t13i.execute-api.eu-north-1.amazonaws.com/api/notes/restore/04bec7a4-cf65-454d-9ef0-ca14498f0e78
+    name: restoreNote
+    meta:
+      id: req_991d2c239f1b4279ba09cac70c5ea894
+      created: 1763761809647
+      modified: 1764153220219
+      isPrivate: false
+      description: ""
+      sortKey: -1763815522299.25
+    method: PUT
+    headers:
+      - name: User-Agent
+        value: insomnia/12.0.0
+    authentication:
+      type: bearer
+      token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzY2JjOGNiMS1hZmZlLTQ0MjgtYTY1Ni04NWQzYTMyZjZlNGYiLCJ1c2VybmFtZSI6ImtpbSIsImlhdCI6MTc2NDE1MTYzOSwiZXhwIjoxNzY0MTU1MjM5fQ.rpczStQc_-NShzQ_68FgJsVilJB1bsjpF8XUFj-FMI8
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: https://qqli65t13i.execute-api.eu-north-1.amazonaws.com/api/notes/restore
+    name: restoreAllNotes
+    meta:
+      id: req_c21fe69972b64d89b2aae2f6edef388d
+      created: 1763812601062
+      modified: 1764152938777
+      isPrivate: false
+      description: ""
+      sortKey: -1763812601062
+    method: PUT
+    headers:
+      - name: User-Agent
+        value: insomnia/12.0.0
+    authentication:
+      type: bearer
+      token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzY2JjOGNiMS1hZmZlLTQ0MjgtYTY1Ni04NWQzYTMyZjZlNGYiLCJ1c2VybmFtZSI6ImtpbSIsImlhdCI6MTc2NDE1MTYzOSwiZXhwIjoxNzY0MTU1MjM5fQ.rpczStQc_-NShzQ_68FgJsVilJB1bsjpF8XUFj-FMI8
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: https://qqli65t13i.execute-api.eu-north-1.amazonaws.com/api/notes
+    name: deleteAllNotes
+    meta:
+      id: req_1aba2090eb9d4483b8e94770216f5247
+      created: 1763815522293
+      modified: 1764152932041
+      isPrivate: false
+      description: ""
+      sortKey: -1763815522293
+    method: DELETE
+    headers:
+      - name: User-Agent
+        value: insomnia/12.0.0
+    authentication:
+      type: bearer
+      token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzY2JjOGNiMS1hZmZlLTQ0MjgtYTY1Ni04NWQzYTMyZjZlNGYiLCJ1c2VybmFtZSI6ImtpbSIsImlhdCI6MTc2NDE1MTYzOSwiZXhwIjoxNzY0MTU1MjM5fQ.rpczStQc_-NShzQ_68FgJsVilJB1bsjpF8XUFj-FMI8
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+cookieJar:
+  name: Default Jar
+  meta:
+    id: jar_21c4f792d594e297380cefe0f60906370ac1f8b5
+    created: 1763714664702
+    modified: 1763714664702
+environments:
+  name: Base Environment
+  meta:
+    id: env_21c4f792d594e297380cefe0f60906370ac1f8b5
+    created: 1763714664701
+    modified: 1763714664701
+    isPrivate: false
