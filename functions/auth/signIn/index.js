@@ -4,6 +4,7 @@ const { DynamoDBDocumentClient, GetCommand } = require("@aws-sdk/lib-dynamodb");
 const { ACCOUNTS_TABLE } = require("../../../utils/services/constants");
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const { validateAuthBodyFormat } = require("../../../utils/services/helpers");
 
 const client = new DynamoDBClient({});
 const db = DynamoDBDocumentClient.from(client);
@@ -34,6 +35,8 @@ async function signIn(username, password) {
     if(!correctPassword) throw new Error("Incorrect username or password.");
 
     const secret = process.env.TOKEN_KEY;
+    if(!secret) throw new Error("JWT secret not configured");
+
     const token = jwt.sign(
         {userId: fetchedUser.userId, username: fetchedUser.username},
         secret,
@@ -47,18 +50,12 @@ exports.handler = async (event) => {
     let username, password;
 
     try {
-        ({username, password} = JSON.parse(event.body));
+        const body = JSON.parse(event.body);
+        ({username, password} = validateAuthBodyFormat(body, "signIn"));
     } catch(err) {
         console.error(err);
-        return sendResponse(400, {message: "Could not parse body for sign up", error: err.message});
+        return sendResponse(400, {message: err.message});
     };
-
-    if(!username || !password) return sendResponse(400, {message: "Both username and password are required."});
-
-    if (typeof username !== "string" || typeof password !== "string") {
-        return sendResponse(400, {message: "Username and password must be strings."});
-    }
-
 
     try {
         const result = await signIn(username, password);

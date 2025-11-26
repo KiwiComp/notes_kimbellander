@@ -5,22 +5,61 @@ const { DynamoDBDocumentClient, GetCommand, QueryCommand, DeleteCommand } = requ
 const client = new DynamoDBClient({});
 const db = DynamoDBDocumentClient.from(client);
 
-function checkBodyFormat(body) {
+function checkBodyFormat(body, method) {
     const allowedFields = ["title", "category", "textContent"]; 
     const filteredBody = {};
 
     for(const key of Object.keys(body)) {
         if(allowedFields.includes(key)) {
-            filteredBody[key] = body[key];
+            filteredBody[key] = body[key]?.toString().trim();
         } else {
             throw new Error(`Field ${key} is not allowed.`);
         }
     }
 
+    if(method === "post") {
+        // if(!filteredBody.title || !filteredBody.category || !filteredBody.textContent) {
+        //     throw new Error("Title, category and textContent are required.")
+        // }
+        for(const key of allowedFields) {
+            if(!filteredBody[key]) {
+                throw new Error(`Field ${key} is required.`);
+            };
+        };
+    };
+
     if(filteredBody.title && filteredBody.title.length > 50) {
         throw new Error("Title is too long, max 50 characters.");
-    } else if(filteredBody.textContent && filteredBody.textContent.length > 300) {
+    } 
+    if(filteredBody.textContent && filteredBody.textContent.length > 300) {
         throw new Error("Text is too long, max 300 characters.");
+    };
+
+    return filteredBody;
+}
+
+function validateAuthBodyFormat(body, authType) {
+    let allowedFields;
+    if(authType === "signUp") {
+        allowedFields = ["username", "password", "firstName", "lastName"];
+    } else if(authType === "signIn") {
+        allowedFields = ["username", "password"];
+    };
+    
+    const filteredBody = {};
+
+    for (const key of Object.keys(body)) {
+        if(allowedFields.includes(key)) {
+            filteredBody[key] = body[key]?.toString().trim();
+        } else {
+            throw new Error(`Field ${key} is not allowed.`);
+        };
+    };
+
+    for (const key of allowedFields) {
+        if(!filteredBody[key]) {
+            throw new Error(`Field ${key} is required.`);
+        };
     };
 
     return filteredBody;
@@ -102,4 +141,4 @@ async function deleteMultipleNotes(deletedNotes, userId) {
     }
 }
 
-module.exports = { checkBodyFormat, getSingleNote, getAllNotes, deleteSingleNote, deleteMultipleNotes };
+module.exports = { checkBodyFormat, getSingleNote, getAllNotes, deleteSingleNote, deleteMultipleNotes, validateAuthBodyFormat };
