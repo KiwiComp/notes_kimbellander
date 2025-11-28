@@ -78,17 +78,13 @@ resources:
       Properties:
         TableName: NOTES
         AttributeDefinitions:
-          # Partition Key
           - AttributeName: PK
             AttributeType: S 
-          # Sort Key
           - AttributeName: SK
             AttributeType: S 
         KeySchema:
-          # Partition Key
           - AttributeName: PK
             KeyType: HASH 
-          # Sort Key
           - AttributeName: SK
             KeyType: RANGE 
         BillingMode: PAY_PER_REQUEST
@@ -97,11 +93,9 @@ resources:
       Properties:
         TableName: USER_ACCOUNTS
         AttributeDefinitions:
-          # Partition Key
           - AttributeName: username
             AttributeType: S 
         KeySchema:
-          # Partition Key
           - AttributeName: username
             KeyType: HASH 
         BillingMode: PAY_PER_REQUEST
