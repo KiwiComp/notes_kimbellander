@@ -18,9 +18,6 @@ function checkBodyFormat(body, method) {
     }
 
     if(method === "post") {
-        // if(!filteredBody.title || !filteredBody.category || !filteredBody.textContent) {
-        //     throw new Error("Title, category and textContent are required.")
-        // }
         for(const key of allowedFields) {
             if(!filteredBody[key]) {
                 throw new Error(`Field ${key} is required.`);
